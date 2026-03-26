@@ -1,0 +1,86 @@
+SELECT *
+FROM makeup_sales_dataset_2025 
+;
+
+-- Total revenue per Brand 
+SELECT Brand,SUM(Revenue_USD) as total_revenue
+FROM makeup_sales_dataset_2025
+GROUP BY Brand ; 
+
+-- Top-Selling Product Type by Units /  TOP 3
+SELECT Product_Type, SUM(Units_Sold) as Total_units
+FROM makeup_sales_dataset_2025 
+GROUP BY Product_Type
+LIMIT 3
+;
+
+-- Monthly Sales Trend
+SELECT 
+    EXTRACT(YEAR FROM Date) AS sales_year,
+    EXTRACT(MONTH FROM Date) AS sales_month,
+    SUM(Revenue_USD) AS total_revenue
+FROM makeup_sales_dataset_2025 
+GROUP BY 
+    EXTRACT(YEAR FROM Date),
+    EXTRACT(MONTH FROM Date)
+ORDER BY 
+    sales_year,
+    sales_month;
+    
+-- Country_wise Payment Method Analysis
+SELECT 
+    Country,
+    Payment_Method,
+    COUNT(*) AS num_sales
+FROM makeup_sales_dataset_2025
+GROUP BY Country, Payment_Method
+ORDER BY Country, num_sales DESC;
+
+
+
+-- High-Value Sales
+SELECT *
+FROM makeup_sales_dataset_2025 
+WHERE Price_USD > 100 AND Units_Sold > 30
+;
+
+-- Sales Channel Performace
+SELECT Sales_Channel, SUM(Revenue_USD) as total_sales
+FROM makeup_sales_dataset_2025 
+GROUP BY Sales_Channel
+;
+
+-- Average Price per Product Type
+SELECT Product_Type, avg(Price_USD) as Avg_price
+FROM makeup_sales_dataset_2025 
+group by Product_Type
+;
+
+-- Brand Revenue Ranking
+SELECT 
+    Brand,
+    SUM(Revenue_USD) AS total_revenue,
+    RANK() OVER (ORDER BY SUM(Revenue_USD) DESC) AS revenue_rank
+FROM makeup_sales_dataset_2025
+GROUP BY Brand
+ORDER BY revenue_rank;
+;
+
+-- Product Performance in a Specific Country
+ SELECT 
+    Product_Type,
+    SUM(Units_Sold) AS total_units_sold,
+    SUM(Revenue_USD) AS total_revenue
+FROM makeup_sales_dataset_2025
+WHERE Country = 'USA'
+GROUP BY Product_Type
+ORDER BY total_revenue DESC;
+
+-- Combined Filters
+SELECT Brand,
+SUM(Revenue_USD) As Total_sale,
+Sales_Channel
+FROM makeup_sales_dataset_2025 
+WHERE Brand = 'Estee Lauder' AND  Sales_Channel = 'Online'
+Order by Total_sale desc
+;
